@@ -1,11 +1,18 @@
 ﻿@page "/"
-@page "/search/{searchTerm}"
+@page "/search/{searchTerm}/{page:int}"
 @page "/{categoryUrl}"
 @inject IProductService ProductService
 
 <PageTitle>My Shop</PageTitle>
+@if(SearchTerm == null && CategoryUrl == null)
+{
+    <FeaturedProducts />
+}
+else
+{
+    <ProductList />
+}
 
-<ProductList />
 
 @code{
     [Parameter]
@@ -14,11 +21,14 @@
     [Parameter]
     public string? SearchTerm { get; set; } = null;
 
+    [Parameter]
+    public int Page { get; set; } = 1;
+
     protected override async Task OnParametersSetAsync()
     {
         if (SearchTerm != null)
         {
-            await ProductService.SearchProducts(SearchTerm);
+            await ProductService.SearchProducts(SearchTerm, Page);
         }
         else
         {
